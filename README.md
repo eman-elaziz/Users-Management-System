@@ -20,17 +20,92 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+# User Management System
 
-To learn more about Next.js, take a look at the following resources:
+A modern multi-step user management form built with **Next.js, React, TypeScript, React Hook Form, Zod, TanStack Query, Tailwind CSS, shadcn/ui, and Atomic Design principles**.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The project focuses on building a reusable and scalable frontend architecture while implementing a fully validated multi-step form with asynchronous country selection, search, pagination, and proper loading and error handling.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Multi-step user registration form
+- Three-step form flow
+- Step-by-step form validation
+- Back and Next navigation
+- Form data persistence between steps
+- Final review before submission
+- Success page after successful submission
+- React Hook Form for form state management
+- Zod for schema validation
+- TanStack Query for server state management
+- Async country selection
+- Searchable country list
+- Pagination / infinite scroll for countries
+- Reusable generic AsyncSelect component
+- Reusable CustomSelect component
+- Single and multiple selection support
+- Maximum selection limit
+- Loading states
+- Empty states
+- API error handling
+- Route-level loading state
+- Route-level error handling with retry
+- Reusable Icon atom
+- Atomic Design architecture
+- Responsive UI
+- Accessibility considerations
+- Full TypeScript support
+- No `any` types used in the implementation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Tech Stack
+
+- **Next.js**
+- **React**
+- **TypeScript**
+- **Tailwind CSS**
+- **shadcn/ui**
+- **Base UI**
+- **Lucide Icons**
+- **React Hook Form**
+- **Zod**
+- **TanStack Query**
+- **Class Variance Authority**
+
+---
+
+# Architecture
+
+The project follows the **Atomic Design** methodology to create reusable and maintainable UI components.
+
+```text
+components/
+│
+├── atoms/
+│   ├── button/
+│   ├── input/
+│   ├── icon/
+│   ├── step-circle/
+│   └── step-connector/
+│
+├── molecules/
+│   ├── step-item/
+│   └── ...
+│
+├── organisms/
+│   ├── custom-select/
+│   ├── async-select/
+│   ├── multi-step-progress/
+│   ├── success-modal/
+│   └── ...
+│
+└── forms/
+    └── user-form/
+        ├── steps/
+        ├── hooks/
+        ├── schemas/
+        └── types/
+```
