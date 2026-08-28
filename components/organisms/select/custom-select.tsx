@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, ChevronDown, Loader2, Search } from "lucide-react";
+import { Check, ChevronDown, Loader2, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -19,6 +19,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { Icon } from "@/components/atoms/icon";
 
 export interface SelectOption {
   label: string;
@@ -30,7 +31,7 @@ interface CustomSelectProps {
   label?: string;
   hint?: string;
 
-  options: SelectOption[];
+  options?: SelectOption[];
 
   value?: string | string[];
   onValueChange?: (value: string | string[]) => void;
@@ -52,12 +53,13 @@ interface CustomSelectProps {
   disabled?: boolean;
 
   className?: string;
+  error?: string;
 }
 
 function CustomSelect({
   label,
   hint,
-  options,
+  options = [],
   value,
   onValueChange,
   placeholder = "Select...",
@@ -71,6 +73,7 @@ function CustomSelect({
   onOpenChange,
   disabled = false,
   className,
+  error,
 }: CustomSelectProps) {
   const [open, setOpen] = useState(false);
 
@@ -156,38 +159,107 @@ function CustomSelect({
         <PopoverTrigger
           disabled={disabled}
           className={cn(
-            "flex h-14 w-full items-center justify-between",
-            "rounded-xl border border-border",
-            "bg-background px-5",
-            "text-left text-base",
-            "transition-all",
+            "flex min-h-14 w-full items-center justify-between gap-3 rounded-xl",
+            "border border-border bg-background px-5 py-2",
+            "text-left text-base transition-colors",
             "hover:border-primary",
-            "focus-visible:border-primary",
-            "focus-visible:outline-none",
-            "focus-visible:ring-2",
-            "focus-visible:ring-primary/20",
-            "data-popup-open:border-primary",
-            "disabled:cursor-not-allowed",
-            "disabled:opacity-50",
+            "focus:outline-none focus:ring-2 focus:ring-primary/20",
+            "disabled:cursor-not-allowed disabled:opacity-50",
+            className,
           )}
         >
-          <span
-            className={cn(
-              "truncate",
-              selectedOptions.length === 0 && "text-muted-foreground",
-            )}
-          >
-            {displayValue}
-          </span>
+          <div className="flex min-w-0 flex-1 items-center gap-2 overflow-hidden">
+            {multiple ? (
+              selectedOptions.length > 0 ? (
+                <div className="flex min-w-0 flex-wrap items-center gap-2">
+                  {selectedOptions.map((option) => (
+                    <span
+                      key={option.value}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-2 text-sm font-medium text-primary"
+                    >
+                      {option.label}
 
-          <ChevronDown
-            className={cn(
-              "size-5 shrink-0 text-muted-foreground",
-              "transition-transform duration-200",
-              open && "rotate-180",
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Remove ${option.label}`}
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          const nextValues = selectedValues.filter(
+                            (item) => item !== option.value,
+                          );
+
+                          onValueChange?.(nextValues);
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            event.stopPropagation();
+
+                            const nextValues = selectedValues.filter(
+                              (item) => item !== option.value,
+                            );
+
+                            onValueChange?.(nextValues);
+                          }
+                        }}
+                        className="cursor-pointer rounded-full text-primary/70 transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                      >
+                        <Icon icon={X} size="sm" />
+                      </span>
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-muted-foreground">{placeholder}</span>
+              )
+            ) : (
+              <span
+                className={cn(
+                  "truncate",
+                  selectedOptions.length === 0 && "text-muted-foreground",
+                )}
+              >
+                {displayValue}
+              </span>
             )}
-            aria-hidden="true"
-          />
+          </div>
+
+          <div className="flex shrink-0 items-center gap-4">
+            {multiple && selectedOptions.length > 0 && (
+              <span
+                role="button"
+                tabIndex={0}
+                aria-label="Clear all selections"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+
+                  onValueChange?.([]);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    onValueChange?.([]);
+                  }
+                }}
+                className="cursor-pointer rounded-full text-primary/70 transition-colors hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+              >
+                <Icon icon={X} size="sm" />
+              </span>
+            )}
+
+            <Icon
+              icon={ChevronDown}
+              className={cn(
+                "size-5 text-muted-foreground transition-transform",
+                open && "rotate-180",
+              )}
+            />
+          </div>
         </PopoverTrigger>
 
         {/* Dropdown */}
@@ -229,30 +301,27 @@ function CustomSelect({
 
                   return (
                     <CommandItem
-                      key={`${option.value}-${option.label}-${index}`}
-                      value={`${option.label} ${option.email ?? ""}`}
+                      key={`${option.value}-${option.label}`}
+                      value={option.label}
                       disabled={disabledOption}
                       onSelect={() => handleSelect(option)}
                       className={cn(
-                        "min-h-12 cursor-pointer",
-                        "rounded-lg px-3",
-                        "text-sm",
-                        "transition-colors",
-
-                        "data-[disabled]:pointer-events-none",
-                        "data-[disabled]:opacity-50",
-
-                        "hover:bg-muted",
-
+                        "cursor-pointer px-4 py-3",
                         selected && "bg-primary-50 text-primary-700",
-
-                        selected && "hover:bg-primary-50",
                       )}
                     >
+                      <Icon
+                        icon={Check}
+                        className={cn(
+                          "mr-2 size-4 shrink-0",
+                          selected
+                            ? "opacity-100 text-primary-600"
+                            : "opacity-0",
+                        )}
+                      />
+
                       <div className="flex min-w-0 flex-1 flex-col">
-                        <span className="truncate font-medium">
-                          {option.label}
-                        </span>
+                        <span className="truncate">{option.label}</span>
 
                         {option.email && (
                           <span className="truncate text-xs text-muted-foreground">
@@ -260,14 +329,6 @@ function CustomSelect({
                           </span>
                         )}
                       </div>
-
-                      {selected && (
-                        <Check
-                          className="ml-3 size-4 shrink-0 text-primary-600"
-                          strokeWidth={2.5}
-                          aria-hidden="true"
-                        />
-                      )}
                     </CommandItem>
                   );
                 })}
@@ -275,7 +336,10 @@ function CustomSelect({
                 {/* Loading */}
                 {loading && (
                   <div className="flex items-center justify-center py-3">
-                    <Loader2 className="size-4 animate-spin text-primary" />
+                    <Icon
+                      icon={Loader2}
+                      className="size-4 animate-spin text-primary"
+                    />
                   </div>
                 )}
 
@@ -290,6 +354,7 @@ function CustomSelect({
           </Command>
         </PopoverContent>
       </Popover>
+      {error && <p className="text-sm text-destructive">{error}</p>}
 
       {/* Multiple selection info */}
       {multiple && (

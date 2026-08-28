@@ -9,6 +9,7 @@ interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   helperText?: string;
   error?: string;
   icon?: LucideIcon;
+  hint?: string;
 }
 
 function InputField({
@@ -18,6 +19,7 @@ function InputField({
   icon,
   id,
   className,
+  hint,
   ...props
 }: InputFieldProps) {
   const inputId = id ?? label.toLowerCase().replace(/\s+/g, "-");

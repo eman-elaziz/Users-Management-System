@@ -8,14 +8,9 @@ import { Icon } from "@/components/atoms/icon";
 interface SuccessModalProps {
   open?: boolean;
   onClose?: () => void;
-  onViewUsers?: () => void;
 }
 
-export function SuccessModal({
-  open = true,
-  onClose,
-  onViewUsers,
-}: SuccessModalProps) {
+export function SuccessModal({ open = true, onClose }: SuccessModalProps) {
   if (!open) return null;
 
   return (
@@ -47,8 +42,8 @@ export function SuccessModal({
             Close
           </Button>
 
-          <Button variant="primary" size="lg" onClick={onViewUsers}>
-            View Users
+          <Button variant="primary" size="lg" onClick={onClose}>
+            ADD another user
           </Button>
         </div>
       </div>
